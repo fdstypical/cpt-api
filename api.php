@@ -35,6 +35,11 @@ switch ($api->module) {
             [$data['login'], $data['password']]
         );
 
+        if($res) {
+            $_SESSION['login'] = $res['login'];
+            $_SESSION['name'] = $res['name'];
+        }
+
         $api->answer['res'] = $res;
         break;
     case 'reg':
@@ -52,9 +57,16 @@ switch ($api->module) {
         $api->answer['res'] = $answer;
         break;
     case 'operator':
-        $data = $api->params(['operator', 'valueDown', 'valueUp']);
-        $expression = $data['valueUp'] . $data['operator'] . $data['valueDown'];
-        $api->answer['result'] = eval('return ' . $expression . ';');
 
+        if(isset($_SESSION['name']) && isset($_SESSION['login'])) {
+            $data = $api->params(['operator', 'valueDown', 'valueUp']);
+            $expression = $data['valueUp'] . $data['operator'] . $data['valueDown'];
+            $api->answer['res'] = eval('return ' . $expression . ';');
+        } else { 
+            $api->answer['res'] = [
+                'status' => 401,
+                'status_msg' => 'Unauthorized',
+            ];
+        }
         break;
 }
