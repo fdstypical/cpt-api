@@ -1,4 +1,6 @@
 <?php
+session_start();
+
 ini_set('error_reporting', E_ALL);
 ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
@@ -27,14 +29,23 @@ $db = new DB("$db_type:host=$ip;dbname=$db_name", $login, $pass,
 $api = new SimpleAPI();
 switch ($api->module) {
     case 'auth':
-        $data = $api->params(['login', 'password']);
+        $data = $api->params(['login', 'password', 'name']);
         $api->answer['auth'] = ($data['login'] == 'admin' && $data['password'] == 'admin');
 
         break;
     case 'reg':
-        $data = $api->params(['login', 'password']);
-        $api->answer['auth'] = ($data['login'] == 'admin' && $data['password'] == 'admin');
+        $data = $api->params(['login', 'password', 'name']);
         
+        $res = $db->query('INSERT INTO users (login, name, password) VALUES (?as)', [
+            [$data['login'], $data['name'], $data['password']]
+        ]);
+
+        $answer = [
+            'status' => ($res) ? 200 : 409,
+            'status_msg' => ($res) ? "Ok" : "User Already Exists",
+        ];
+
+        $api->answer['res'] = $answer;
         break;
     case 'operator':
         $data = $api->params(['operator', 'valueDown', 'valueUp']);
