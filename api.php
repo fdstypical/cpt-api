@@ -5,7 +5,6 @@ ini_set('display_startup_errors', 1);
 
 require_once "./libs/DataBase/autoload.php";
 require_once "./libs/simple-api/autoload.php";
-require_once "./index.php";
 
 use DigitalStars\DataBase\DB;
 use DigitalStars\SimpleAPI;
@@ -35,6 +34,12 @@ switch ($api->module) {
     case 'reg':
         $data = $api->params(['login', 'password']);
         $api->answer['auth'] = ($data['login'] == 'admin' && $data['password'] == 'admin');
+        
+        break;
+    case 'operator':
+        $data = $api->params(['operator', 'valueDown', 'valueUp']);
+        $expression = $data['valueUp'] . $data['operator'] . $data['valueDown'];
+        $api->answer['result'] = eval('return ' . $expression . ';');
 
         break;
 }
