@@ -29,7 +29,7 @@ $db = new DB("$db_type:host=$ip;dbname=$db_name", $login, $pass,
 $api = new SimpleAPI();
 switch ($api->module) {
     case 'auth':
-        $data = $api->params(['login', 'password', 'name']);
+        $data = $api->params(['login', 'password']);
         
         $res = $db->row('SELECT * FROM users WHERE login=?s and password=?s',
             [$data['login'], $data['password']]
