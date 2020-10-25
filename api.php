@@ -57,16 +57,32 @@ switch ($api->module) {
         $api->answer['res'] = $answer;
         break;
     case 'operator':
-
         if(isset($_SESSION['name']) && isset($_SESSION['login'])) {
             $data = $api->params(['operator', 'valueDown', 'valueUp']);
             $expression = $data['valueUp'] . $data['operator'] . $data['valueDown'];
             $api->answer['res'] = eval('return ' . $expression . ';');
-        } else { 
+        } else {
             $api->answer['res'] = [
                 'status' => 401,
                 'status_msg' => 'Unauthorized',
             ];
         }
+        break;
+    case 'checkUser': 
+        if(isset($_SESSION['name']) && isset($_SESSION['login'])) {
+            $api->answer = [
+                'name' => $_SESSION['name'],
+                'login' => $_SESSION['name'],
+            ];
+        } else {
+            $api->answer['res'] = [
+                'status' => 401,
+                'status_msg' => 'Unauthorized',
+            ];
+        }
+        break;
+    case 'logout':
+        unset($_SESSION['name']);
+        unset($_SESSION['login']);
         break;
 }
