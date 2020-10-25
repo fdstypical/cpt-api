@@ -82,7 +82,6 @@ switch ($api->module) {
         }
         break;
     case 'logout':
-        unset($_SESSION['name']);
-        unset($_SESSION['login']);
+        session_destroy();
         break;
 }
