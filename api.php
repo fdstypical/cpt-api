@@ -70,7 +70,7 @@ switch ($api->module) {
         break;
     case 'checkUser': 
         if(isset($_SESSION['name']) && isset($_SESSION['login'])) {
-            $api->answer = [
+            $api->answer['res'] = [
                 'name' => $_SESSION['name'],
                 'login' => $_SESSION['name'],
             ];
