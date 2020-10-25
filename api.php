@@ -59,8 +59,15 @@ switch ($api->module) {
     case 'operator':
         if(isset($_SESSION['name']) && isset($_SESSION['login'])) {
             $data = $api->params(['operator', 'valueDown', 'valueUp']);
-            $expression = $data['valueUp'] . $data['operator'] . $data['valueDown'];
-            $api->answer['res'] = eval('return ' . $expression . ';');
+            if(is_numeric($data['valueUp']) && is_numeric($data['valueDown'])) {
+                $expression = $data['valueUp'] . $data['operator'] . $data['valueDown'];
+                $api->answer['res'] = eval('return ' . $expression . ';');
+            } else {
+                $api->answer['res'] = [
+                    'status' => 400,
+                    'status_msg' => "Bad request",
+                ];
+            }
         } else {
             $api->answer['res'] = [
                 'status' => 401,
